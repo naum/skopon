@@ -4,5 +4,5 @@ import 'dart:io';
 
 main() {
   print('Content-type: text/html\n\n');
-  print('hail zeus!');
+  print('by jove!');
 }
