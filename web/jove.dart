@@ -3,8 +3,18 @@
 import 'dart:io';
 
 main() {
+  outputHeaders();
+  displayEnvironment();
+}
+
+displayEnvironment() {
+  var sk = Platform.environment.keys.toList();
+  sk.sort();
+  for (var k in sk) {
+      print('$k: ${Platform.environment[k]}<br>\n');
+  };
+}
+
+outputHeaders() {
   print('Content-type: text/html\n\n');
-  print('by jove!');
-  print('<br><br>');
-  print(Platform.environment);
 }
