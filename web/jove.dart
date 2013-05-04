@@ -1,4 +1,4 @@
-#!/Users/george/dart2/dart-sdk/bin/dart
+#!/usr/local/bin/dart
 
 import 'dart:io';
 
