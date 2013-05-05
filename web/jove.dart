@@ -7,6 +7,7 @@ var template = '''
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link href="http://fonts.googleapis.com/css?family=Questrial" rel="stylesheet" type="text/css">
 <title>skopon</title>
 <link rel="stylesheet" href="/style/main.css">
 </head>
@@ -16,6 +17,7 @@ var template = '''
 <footer>
 {{PAGEFOOTER}}
 </footer>
+<script src="/script/jove.js"></script>
 </body>
 </html>
 ''';
@@ -45,5 +47,5 @@ displayEnvironment() {
 }
 
 outputHeaders() {
-  print('Content-type: text/html\n\n');
+  print('Content-type: text/html\n');
 }
