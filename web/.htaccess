@@ -1,5 +1,9 @@
 AddHandler cgi-script .dart
 RewriteEngine On
+RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ jove.dart/$1 [L]
+RewriteRule ^wiki/(.*)$ /?page=$1
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /jove.dart/$1 [L]
