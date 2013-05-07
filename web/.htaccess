@@ -6,4 +6,5 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^wiki/(.*)$ /?page=$1
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/page
 RewriteRule ^(.*)$ /jove.dart/$1 [L]
