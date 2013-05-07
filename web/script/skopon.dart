@@ -5,11 +5,7 @@ var pageboard = query('#pageboard');
 
 main() {
   var pagename = determineDesiredPage();
-  if (! pagename.isEmpty) {
-    displayPage(pagename);
-  } else {
-    pageboard.innerHtml = '<p>MIA</p>';
-  }
+  displayPage(pagename);
 }
 
 String determineDesiredPage() {
@@ -17,7 +13,6 @@ String determineDesiredPage() {
   if (pagepath == '/') {
     return 'Page_One';
   } else {
-    print('pagepath: $pagepath');
     var reWikiPath = new RegExp(r'\/wiki\/(.*)');
     var m = reWikiPath.firstMatch(pagepath);
     if (m is Match && m.groupCount > 0) {
