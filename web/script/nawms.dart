@@ -44,7 +44,7 @@ String externalLink(Match m) {
 
 String fillEscapeBlock(Match m) {
   var n = int.parse(m.group(1)) - 1;
-  return '<pre>${escblock[n]}</pre>\n';
+  return '<pre><code>${escblock[n]}</code></pre>\n';
 }
 
 String fillExternalLink(Match m) {
@@ -68,24 +68,24 @@ String wikiToHtml(String tex) {
   var reMonospace = new RegExp(r'\`\`(.*?)\`\`');
   var reWikiLink = new RegExp(r'\~(\w+)');
   for (var line in tex.split('\n')) {
-    var depth = 0;
+    num depth = 0;
     if (reBlankLine.hasMatch(line)) continue;
     if (reBulletListItem.hasMatch(line)) {
       line = line.replaceAllMapped(reBulletListItem, (m) {
         depth = m.group(1).length;
-        return '<li>${m.group(2)}</li>';
+        return '<li>${m.group(2).trim()}</li>';
       });
       hout.write(emit('ul', depth));
     } else if (reEnumeratedListItem.hasMatch(line)) {
       line = line.replaceAllMapped(reEnumeratedListItem, (m) {
         depth = m.group(1).length;
-        return '<li>${m.group(2)}</li>';
+        return '<li>${m.group(2).trim()}</li>';
       });
       hout.write(emit('ol', depth));
     } else if (reBlockquote.hasMatch(line)) {
       line = line.replaceAllMapped(reBlockquote, (m) {
-        depth = int.parse(m.group(1)) / 4;
-        return '<p>${m.group(2)}</p>';
+        depth = m.group(1).length ~/ 4;
+        return '<p>${m.group(3)}</p>';
       });
       hout.write(emit('blockquote', depth));
     } else if (reDefinitionList.hasMatch(line)) {
@@ -99,7 +99,7 @@ String wikiToHtml(String tex) {
       hout.write(emit('eots', 0));
     } else if (reHeading.hasMatch(line)) {
       line = line.replaceAllMapped(reHeading, (m) {
-        var h = 'h${int.parse(m.group(1)) + 2}';
+        var h = 'h${m.group(1).length + 2}';
         return '<$h>${m.group(2)}</$h>\n';
       });
       hout.write(emit('eots', 0));
