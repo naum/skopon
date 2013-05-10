@@ -38,7 +38,7 @@ String escapeHtmlSpecialChars(String s) {
 }
 
 String externalLink(Match m) {
-  extlink.add(m.group(1));
+  extlink.add(m.group(0));
   return '${LINKMARK}${extlink.length}${LINKMARK}';
 }
 
@@ -49,13 +49,21 @@ String fillEscapeBlock(Match m) {
 
 String fillExternalLink(Match m) {
   var n = int.parse(m.group(1)) - 1;
-  return '<a href="${extlink[n]}">${extlink[n]}</a>';
+  return '<a href="${extlink[n]}">${prettifyUrl(extlink[n])}</a>';
+}
+
+String prettifyUrl(String u) {
+  var reHostPrefix = new RegExp(r'^(http|https|ftp|mailto):(\/\/)?');
+  return u.replaceFirst(reHostPrefix, '');
 }
 
 String wikiToHtml(String tex) {
   var hout = new StringBuffer();
   tex = unixfyEol(tex);
   tex = escapeHtmlSpecialChars(tex);
+  var reEscBlock = new RegExp(r'\=\=\=\=((.|\n)*?)\=\=\=\=', multiLine: true);
+  print('reEscBlock multiline?: ${reEscBlock.isMultiLine}');
+  var reExtLink = new RegExp(r'\b(http|https|ftp|mailto):\S*');
   var reBlankLine = new RegExp(r'^\s*$');
   var reBulletListItem = new RegExp(r'^(\*+)(.*)$');
   var reEnumeratedListItem = new RegExp(r'^(\#+)(.*)$');
@@ -67,6 +75,9 @@ String wikiToHtml(String tex) {
   var reEmphasis = new RegExp(r'\_\_(.*?)\_\_');
   var reMonospace = new RegExp(r'\`\`(.*?)\`\`');
   var reWikiLink = new RegExp(r'\~(\w+)');
+  tex = tex.replaceAllMapped(reEscBlock, escapeBlock);
+  tex = tex.replaceAllMapped(reExtLink, externalLink);
+  print('escblock: $escblock');
   for (var line in tex.split('\n')) {
     num depth = 0;
     if (reBlankLine.hasMatch(line)) continue;
@@ -104,7 +115,7 @@ String wikiToHtml(String tex) {
       });
       hout.write(emit('eots', 0));
     } else {
-      line = '<p>$line</p>';
+      line = (! line.contains(ESCMARK)) ? '<p>$line</p>' : '<div>$line</div>';
       hout.write(emit('eots', 0));
     }
     line = line.replaceAllMapped(reStrong, (m) => '<strong>${m.group(1)}</strong>');
@@ -114,7 +125,12 @@ String wikiToHtml(String tex) {
     hout.write('${line}\n');
   }
   hout.write(emit('eots', 0));
-  return hout.toString();
+  var gh = hout.toString();
+  var reLinkMark = new RegExp('${LINKMARK}' + r'(\d+)' + '${LINKMARK}');
+  gh = gh.replaceAllMapped(reLinkMark, fillExternalLink);
+  var reEscMark = new RegExp('${ESCMARK}' + r'(\d+)' + '${ESCMARK}');
+  gh = gh.replaceAllMapped(reEscMark, fillEscapeBlock);
+  return gh;
 }
 
 String unixfyEol(String s) {

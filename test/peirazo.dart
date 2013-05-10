@@ -6,6 +6,8 @@ import '../web/script/nawms.dart';
 var sampleDocument = '''
 Line 1.
 
+==== a comment ====
+
 Line 2.
 
 Line 3.
@@ -13,6 +15,15 @@ Line 3.
     Line 3A.
 
 Line 4.
+
+
+====
+    10 PRINT
+    20 GOTO 10
+====
+
+http://google.com
+http://dartlang.org
 
 !My grocery list
 
@@ -31,6 +42,8 @@ Line 4.
 # rinse
 # dry
 
+==== boo freaking hoo ====
+
 >lorem ipsum...
 >>inside the onion…
 >da doy
@@ -38,6 +51,10 @@ Line 4.
 
 ``10 PRINT`` 
 ``20 GOTO 10``
+
+====
+ESCAPE FROM ALCATRAZ
+====
 
 And she said ~Please_come_to_Boston!
 
