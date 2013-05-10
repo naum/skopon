@@ -1,0 +1,5 @@
+name: skopon
+description: a dartisan wiki
+dependencies: 
+  unittest: any
+

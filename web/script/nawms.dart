@@ -62,7 +62,11 @@ String wikiToHtml(String tex) {
   var reBlockquote = new RegExp(r'^((\&gt\;)+)(.*)$');
   var reDefinitionList = new RegExp(r'^(:+)(.+?):( +)(.*)$');
   var reHorizontalRule = new RegExp(r'^----*(.*)$');
-  var reHeading = new RegExp(r'^!{1,4}(.*)$'
+  var reHeading = new RegExp(r'^(!{1,4})(.*)$');
+  var reStrong = new RegExp(r'\*\*(.*?)\*\*');
+  var reEmphasis = new RegExp(r'\_\_(.*?)\_\_');
+  var reMonospace = new RegExp(r'\`\`(.*?)\`\`');
+  var reWikiLink = new RegExp(r'\~\w+');
   for (var line in tex.split('\n')) {
     var depth = 0;
     if (reBlankLine.hasMatch(line)) continue;
@@ -85,15 +89,40 @@ String wikiToHtml(String tex) {
       });
       hout.write(emit('blockquote', depth));
     } else if (reDefinitionList.hasMatch(line)) {
+      line = line.replaceAllMapped(reDefinitionList, (m) {
+        depth = int.parse(m.group(1));
+        return '<dt>${m.group(2)}</dt><dd>${m.group(4)}</dd>';
+      });
+      hout.write(emit('dl', depth));
     } else if (reHorizontalRule.hasMatch(line)) {
+      line = line.replaceAllMapped(reHorizontalRule, (m) => '<hr>\n');
+      hout.write(emit('eots', 0));
     } else if (reHeading.hasMatch(line)) {
+      line = line.replaceAllMapped(reHeading, (m) {
+        var h = 'h${int.parse(m.group(1)) + 2}';
+        return '<$h>${m.group(2)}</$h>\n';
+      });
+      hout.write(emit('eots', 0));
     } else {
       line = '<p>$line</p>';
       hout.write(emit('eots', 0));
     }
+    line = line.replaceAllMapped(reStrong, (m) => '<strong>${m.group(1)}</strong>');
+    line = line.replaceAllMapped(reEmphasis, (m) => '<em>${m.group(1)}</em>');
+    line = line.replaceAllMapped(reMonospace, (m) => '<tt>${m.group(1)}</tt>');
+    line = line.replaceAllMapped(reWikiLink, wikilink);
+    hout.write('${line}\n');
   }
+  hout.write(emit('eots', 0));
+  return hout.toString();
 }
 
 String unixfyEol(String s) {
   return (s.contains('\n')) ? s.replaceAll('\r', '') : s.replaceAll('\r', '\n');
+}
+
+String wikilink(Match m) {
+  var page = m.group(0);
+  var pagedesc = page.replaceAll('_', ' ');
+  return '<a href="/page/${page}">$pagedesc</a>';
 }
