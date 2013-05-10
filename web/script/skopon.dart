@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'dart:async';
+import 'nawms.dart';
 
 var pageboard = query('#pageboard');
 
