@@ -66,7 +66,7 @@ String wikiToHtml(String tex) {
   var reStrong = new RegExp(r'\*\*(.*?)\*\*');
   var reEmphasis = new RegExp(r'\_\_(.*?)\_\_');
   var reMonospace = new RegExp(r'\`\`(.*?)\`\`');
-  var reWikiLink = new RegExp(r'\~\w+');
+  var reWikiLink = new RegExp(r'\~(\w+)');
   for (var line in tex.split('\n')) {
     var depth = 0;
     if (reBlankLine.hasMatch(line)) continue;
@@ -122,7 +122,7 @@ String unixfyEol(String s) {
 }
 
 String wikilink(Match m) {
-  var page = m.group(0);
+  var page = m.group(1);
   var pagedesc = page.replaceAll('_', ' ');
   return '<a href="/page/${page}">$pagedesc</a>';
 }
