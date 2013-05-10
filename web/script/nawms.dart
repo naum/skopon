@@ -62,7 +62,6 @@ String wikiToHtml(String tex) {
   tex = unixfyEol(tex);
   tex = escapeHtmlSpecialChars(tex);
   var reEscBlock = new RegExp(r'\=\=\=\=((.|\n)*?)\=\=\=\=', multiLine: true);
-  print('reEscBlock multiline?: ${reEscBlock.isMultiLine}');
   var reExtLink = new RegExp(r'\b(http|https|ftp|mailto):\S*');
   var reBlankLine = new RegExp(r'^\s*$');
   var reBulletListItem = new RegExp(r'^(\*+)(.*)$');
@@ -72,12 +71,12 @@ String wikiToHtml(String tex) {
   var reHorizontalRule = new RegExp(r'^----*(.*)$');
   var reHeading = new RegExp(r'^(!{1,4})(.*)$');
   var reStrong = new RegExp(r'\*\*(.*?)\*\*');
-  var reEmphasis = new RegExp(r'\_\_(.*?)\_\_');
+  var reEmphasis = new RegExp(r'\_(.*?)\_');
+  var reEmphasisAlt = new RegExp(r'\*(.*?)\*');
   var reMonospace = new RegExp(r'\`\`(.*?)\`\`');
   var reWikiLink = new RegExp(r'\~(\w+)');
   tex = tex.replaceAllMapped(reEscBlock, escapeBlock);
   tex = tex.replaceAllMapped(reExtLink, externalLink);
-  print('escblock: $escblock');
   for (var line in tex.split('\n')) {
     num depth = 0;
     if (reBlankLine.hasMatch(line)) continue;
@@ -120,6 +119,7 @@ String wikiToHtml(String tex) {
     }
     line = line.replaceAllMapped(reStrong, (m) => '<strong>${m.group(1)}</strong>');
     line = line.replaceAllMapped(reEmphasis, (m) => '<em>${m.group(1)}</em>');
+    line = line.replaceAllMapped(reEmphasisAlt, (m) => '<em>${m.group(1)}</em>');
     line = line.replaceAllMapped(reMonospace, (m) => '<tt>${m.group(1)}</tt>');
     line = line.replaceAllMapped(reWikiLink, wikilink);
     hout.write('${line}\n');

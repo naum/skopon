@@ -47,7 +47,9 @@ http://dartlang.org
 >lorem ipsum...
 >>inside the onion…
 >da doy
->can be a **bright** tomorrow for __The Communitarian__
+>can be a **bright** tomorrow for _The Communitarian_
+
+Watch *My Fair Lady* you may.
 
 ``10 PRINT`` 
 ``20 GOTO 10``
