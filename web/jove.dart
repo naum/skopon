@@ -1,6 +1,16 @@
 #!/usr/local/bin/dart
 
 import 'dart:io';
+import 'dart:json';
+
+final notFoundMessage = '''
+Page missing!
+''';
+
+final routeChart = {
+  'dumpenv': displayEnvironment,
+  'time': showTime,
+};
 
 var template = '''
 <!DOCTYPE html>
@@ -23,8 +33,13 @@ var template = '''
 ''';
 
 main() {
+  List parg = parsePathArg();
   outputHeaders();
-  displayEnvironment();
+  if (routeChart.containsKey(parg[0])) {
+    routeChart[parg[0]]();
+  } else {
+    displayMissingPageMessage();
+  }
 }
 
 displayEnvironment() {
@@ -38,14 +53,33 @@ displayEnvironment() {
     'PAGEHEADER': 'Platform.environment',
     'PAGEBODY': sb.toString()
   };
-  var reTS = new RegExp(r'\{\{(\w+)\}\}');
-  var pbody = template.replaceAllMapped(reTS, (m) {
-    var tv = m.group(1);
-    return (pagebind.containsKey(tv)) ? pagebind[tv] : '';
-  }); 
-  print(pbody);
+  render(template, pagebind);
+}
+
+displayMissingPageMessage() {
+  var pb = { 'PAGEHEADER': '404', 'PAGEBODY': notFoundMessage };
+  render(template, pb);
 }
 
 outputHeaders() {
   print('Content-type: text/html\n');
+}
+
+List parsePathArg() {
+  var ruri = Platform.environment['REQUEST_URI'].substring(1);
+  return ruri.split('/');
+}
+
+String render(String t, Map pb) {
+  var reTS = new RegExp(r'\{\{(\w+)\}\}');
+  var pout = template.replaceAllMapped(reTS, (m) {
+    var tv = m.group(1);
+    return (pb.containsKey(tv)) ? pb[tv] : '';
+  }); 
+  print(pout);
+}
+
+showTime() {
+  var t = new DateTime.now();
+  print(t);
 }
