@@ -9,6 +9,7 @@ Page missing!
 
 final routeChart = {
   'dumpenv': displayEnvironment,
+  'save': saveArticle,
   'time': showTime,
 };
 
@@ -77,6 +78,9 @@ String render(String t, Map pb) {
     return (pb.containsKey(tv)) ? pb[tv] : '';
   }); 
   print(pout);
+}
+
+saveArticle() {
 }
 
 showTime() {
