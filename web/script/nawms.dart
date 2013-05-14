@@ -140,5 +140,5 @@ String unixfyEol(String s) {
 String wikilink(Match m) {
   var page = m.group(1);
   var pagedesc = page.replaceAll('_', ' ');
-  return '<a href="/page/${page}">$pagedesc</a>';
+  return '<a href="/wiki/${page}">$pagedesc</a>';
 }

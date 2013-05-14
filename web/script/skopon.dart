@@ -46,7 +46,7 @@ String determineDesiredPage() {
 displayPage(pn) {
   var u = '/page/${pn}';
   var req = HttpRequest.getString(u).then((resptext) {
-    pageboard.innerHtml = resptext;
+    pageboard.innerHtml = wikiToHtml(resptext);
   }, onError: (e) {
     createEditForm(pn);
   });
