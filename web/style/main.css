@@ -25,6 +25,11 @@ body {
   line-height: 1.33em;
 }
 
+button {
+  background-color: #cadaf0;
+  color: #000000;
+}
+
 footer {
   color: #205193;
   font-size: 0.75em;
@@ -48,6 +53,10 @@ h3 {
   font-size: 1.77em;
 }
 
+textarea {
+  font-family: monospace;
+}
+
 #article {
   color: #ffffff;
   background-color: #040b14;
@@ -58,7 +67,11 @@ h3 {
   margin: 1.33em auto;
 }
 
+#pagecommandbar {
+  margin: 0.66em auto;
+  text-align: center;
+}
+
 #save {
-  font-size: 1.33em;
 }
 

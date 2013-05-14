@@ -4,6 +4,7 @@ import 'dart:json';
 import 'nawms.dart';
 
 var pageboard = query('#pageboard');
+var pagecommandbar = query('#pagecommandbar');
 
 main() {
   var pagename = determineDesiredPage();
@@ -20,11 +21,11 @@ createEditForm(String pn) {
     ..name = 'article';
   taArticle.classes.add('article-edit');
   taArticle.style.height = '${hipx}px';
-  var buSaveArticle = new ButtonInputElement()
+  var buSaveArticle = new ButtonElement()
     ..id = 'save'
-    ..value = 'save';
+    ..text = 'Save';
   pageboard.children.add(taArticle);
-  pageboard.children.add(buSaveArticle);
+  pagecommandbar.children.add(buSaveArticle);
   buSaveArticle.onClick.listen((e) => postArticle());
 }
 
