@@ -11,3 +11,9 @@
 ** Very poor Google juice as initially constructed
 ** Need to generate HTML instead of "wiki body" files
 
+# Advanced editor features
+** Though overarching philosophy is to keep this is simple and minimalistic as possible.
+** Still, some features to add:
+*** File/image uploads
+*** Preview formatted HTML as wiki text is entered
+
