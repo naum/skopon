@@ -7,20 +7,24 @@ import 'nawms.dart';
 var pageboard = query('#pageboard');
 var pagecommandbar = query('#pagecommandbar');
 var pagename;
+var wikibody = '';
 
 main() {
   pagename = determineDesiredPage();
-  displayPage(pagename);
+  fetchPage(pagename);
 }
 
 createEditForm(String pn) {
+  pagecommandbar.children.clear();
+  pageboard.children.clear();
   var hipx = (window.innerHeight * 1) ~/ 2;
   var h = new HeadingElement.h3();
   h.text = 'Edit ${pn.replaceAll('_', ' ')}';
   pageboard.children.add(h);
   var taArticle = new TextAreaElement()
     ..id = 'article'
-    ..name = 'article';
+    ..name = 'article'
+    ..value = wikibody;
   taArticle.classes.add('article-edit');
   taArticle.style.height = '${hipx}px';
   var buSaveArticle = new ButtonElement()
@@ -46,23 +50,46 @@ String determineDesiredPage() {
   }
 }
 
-displayPage(pn) {
+displayPage() {
+  var h = '<h3>${pagename.replaceAll('_', ' ')}</h3>';
+  pageboard.children.clear();
+  pageboard.innerHtml = h + wikiToHtml(wikibody);
+  pagecommandbar.children.clear();
+  var buEditArticle = new ButtonElement()
+    ..id = 'edit'
+    ..text = 'Edit';
+  pagecommandbar.children.add(buEditArticle);
+  buEditArticle.onClick.listen((e) => createEditForm(pagename));
+}
+
+fetchPage(pn) {
+  pagename = pn;
   var u = '/page/${pn}';
   var req = HttpRequest.getString(u).then((resptext) {
-    pageboard.innerHtml = wikiToHtml(resptext);
-  }, onError: (e) {
+    wikibody = resptext;
+    displayPage();
+  }).catchError((e) {
+    wikibody = '';
     createEditForm(pn);
   });
 }
 
 postArticle() {
-  print('inside postArticle...');
   var articleBody = query('#article').value;
+  wikibody = query('#article').value;
   Map jo = {
     'title': pagename,
     'article': articleBody
   };
-  print('articleBody: ${articleBody}');
   var postdata = encodeUriComponent(stringify(jo));
-  HttpRequest.request('/save', method: 'POST', sendData: postdata);
+  HttpRequest.request('/save', method: 'POST', sendData: postdata).then((r) {
+    var rstat = parse(r.response);
+    if (rstat['isOK']) {
+      displayPage();
+    } else {
+      window.alert('There was a problem with saving this page!');
+    }
+  }).catchError((e) {
+    print('error: ${e}');
+  });
 }
