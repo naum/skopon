@@ -8,6 +8,8 @@ final notFoundMessage = '''
 Page missing!
 ''';
 
+var postInput;
+
 final routeChart = {
   'dumpenv': displayEnvironment,
   'save': saveArticle,
@@ -83,6 +85,12 @@ String render(String t, Map pb) {
 }
 
 saveArticle() {
+  if (Platform.environment['REQUEST_METHOD'] == 'POST') {
+    stdin.listen((e) {
+      postInput = new String.fromCharCodes(e);
+      jotdown('postInput: ${postInput}');
+    });
+  }
 }
 
 showTime() {

@@ -1,13 +1,15 @@
 import 'dart:html';
 import 'dart:async';
 import 'dart:json';
+import 'dart:uri';
 import 'nawms.dart';
 
 var pageboard = query('#pageboard');
 var pagecommandbar = query('#pagecommandbar');
+var pagename;
 
 main() {
-  var pagename = determineDesiredPage();
+  pagename = determineDesiredPage();
   displayPage(pagename);
 }
 
@@ -55,4 +57,12 @@ displayPage(pn) {
 
 postArticle() {
   print('inside postArticle...');
+  var articleBody = query('#article').value;
+  Map jo = {
+    'title': pagename,
+    'article': articleBody
+  };
+  print('articleBody: ${articleBody}');
+  var postdata = encodeUriComponent(stringify(jo));
+  HttpRequest.request('/save', method: 'POST', sendData: postdata);
 }
