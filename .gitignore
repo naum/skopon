@@ -2,5 +2,6 @@
 *.map
 *.deps
 log
+*.log
 packages
 pubspec.lock

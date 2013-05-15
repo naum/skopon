@@ -1,7 +1,9 @@
 #!/usr/local/bin/dart
 
 import 'dart:io';
+import 'dart:async';
 import 'dart:json';
+import 'dart:uri';
 import 'gabby.dart';
 
 final notFoundMessage = '''
@@ -39,7 +41,6 @@ var template = '''
 main() {
   List parg = parsePathArg();
   outputHeaders();
-  jotdown('hola!');
   if (routeChart.containsKey(parg[0])) {
     routeChart[parg[0]]();
   } else {
@@ -88,7 +89,18 @@ saveArticle() {
   if (Platform.environment['REQUEST_METHOD'] == 'POST') {
     stdin.listen((e) {
       postInput = new String.fromCharCodes(e);
-      jotdown('postInput: ${postInput}');
+      //jotdown('postInput: ${postInput}');
+      var jo = parse(decodeUriComponent(postInput));
+      var pn = jo['title'];
+      try {
+        jotdown('commencing writing of page: ${pn}');
+        var pf = new File('page/${pn}');
+        pf.writeAsStringSync(jo['article']);
+        print(stringify({'isOK': true}));
+      } on FileIOException {
+        jotdown('error writing page file');
+        print(stringify({'isOK': false}));
+      }
     });
   }
 }
