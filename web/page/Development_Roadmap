@@ -1,0 +1,13 @@
+# Administrator authentication
+** Simple, hard coded hash for single (or few) administrators
+** ~Master_Control panel to add administrators (and perform other administrative tasks)
+** Open user registration (would need email facility)
+
+# Search function
+** Simple grep style to start with
+** Automated indexed word building
+
+# SEO concerns
+** Very poor Google juice as initially constructed
+** Need to generate HTML instead of "wiki body" files
+
