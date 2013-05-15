@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'dart:json';
+import 'gabby.dart';
 
 final notFoundMessage = '''
 Page missing!
@@ -36,6 +37,7 @@ var template = '''
 main() {
   List parg = parsePathArg();
   outputHeaders();
+  jotdown('hola!');
   if (routeChart.containsKey(parg[0])) {
     routeChart[parg[0]]();
   } else {
