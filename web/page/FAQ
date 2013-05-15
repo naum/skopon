@@ -15,3 +15,5 @@ And some more.
     print('hello world');
   }
 ====
+
+And there is more stuff after the escaped block.
