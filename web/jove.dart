@@ -89,16 +89,14 @@ saveArticle() {
   if (Platform.environment['REQUEST_METHOD'] == 'POST') {
     stdin.listen((e) {
       postInput = new String.fromCharCodes(e);
-      //jotdown('postInput: ${postInput}');
       var jo = parse(decodeUriComponent(postInput));
       var pn = jo['title'];
       try {
-        jotdown('commencing writing of page: ${pn}');
         var pf = new File('page/${pn}');
         pf.writeAsStringSync(jo['article']);
         print(stringify({'isOK': true}));
       } on FileIOException {
-        jotdown('error writing page file');
+        jotdown('error writing page file: ${pn}');
         print(stringify({'isOK': false}));
       }
     });
