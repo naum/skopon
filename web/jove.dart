@@ -4,7 +4,11 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:json';
 import 'dart:uri';
+import 'dart:crypto';
 import 'gabby.dart';
+
+final ADMIN_STASH = '../data/admin.json';
+final PASS_SALT = 'Hell is hopelessness.';
 
 final notFoundMessage = '''
 Page missing!
@@ -15,6 +19,7 @@ var postInput;
 final routeChart = {
   'dumpenv': displayEnvironment,
   'save': saveArticle,
+  'signin': signin,
   'time': showTime,
 };
 
@@ -67,6 +72,27 @@ displayMissingPageMessage() {
   render(template, pb);
 }
 
+List fetchPassToken(String u, String p) {
+  var af = new File(ADMIN_STASH);
+  var pt = generateToken(u, p);
+  var lot = [];
+  adminStore = parse(af.readAsStringSync());
+  for (var a in adminStore) {
+    lot.add(a.passtoken);
+  }
+  if (lot.contains(pt)) {
+    return [true, pt];
+  } else {
+    return [false, null];
+  }
+}
+
+String generateToken(String username, String password) {
+  var sha1 = new SHA1();
+  sha1.add('${PASS_SALT} ${username} ${password}'.codeUnits);
+  return CryptoUtils.bytesToHex(sha1.close());
+}
+
 outputHeaders() {
   print('Content-type: text/html\n');
 }
@@ -106,4 +132,19 @@ saveArticle() {
 showTime() {
   var t = new DateTime.now();
   print(t);
+}
+
+signin() {
+  if (Platform.environment['REQUEST_METHOD'] == 'POST') {
+    stdin.listen((e) {
+      postInput = new String.fromCharCodes(e);
+      var jo = parse(decodeUriComponent(postInput));
+      var tokinfo = fetchPassToken(jo['username'], jo['password']);
+      if (tokinfo[0]) {
+        print(stringify({'isOK': true, 'passtoken': tokinfo[1]}));
+      } else {
+        print(stringify({'isOK': false, 'passtoken': null}));
+      }
+    });
+  }
 }
