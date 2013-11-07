@@ -1,5 +1,6 @@
 name: skopon
 description: a dartisan wiki
 dependencies: 
+  crypto: any
   unittest: any
 

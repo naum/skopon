@@ -2,9 +2,11 @@
 
 import 'dart:io';
 import 'dart:async';
-import 'dart:json';
-import 'dart:uri';
-import 'dart:crypto';
+//import 'dart:json';
+import 'dart:convert';
+//import 'dart:uri';
+//import 'dart:crypto';
+//import 'packages/crypto/crypto.dart';
 import 'gabby.dart';
 
 final ADMIN_STASH = '../data/admin.json';
@@ -76,7 +78,7 @@ List fetchPassToken(String u, String p) {
   var af = new File(ADMIN_STASH);
   var pt = generateToken(u, p);
   var lot = [];
-  adminStore = parse(af.readAsStringSync());
+  adminStore = JSON.decode(af.readAsStringSync());
   for (var a in adminStore) {
     lot.add(a.passtoken);
   }
@@ -115,15 +117,15 @@ saveArticle() {
   if (Platform.environment['REQUEST_METHOD'] == 'POST') {
     stdin.listen((e) {
       postInput = new String.fromCharCodes(e);
-      var jo = parse(decodeUriComponent(postInput));
+      var jo = JSON.decode(Uri.decodeQueryComponent(postInput));
       var pn = jo['title'];
       try {
         var pf = new File('page/${pn}');
         pf.writeAsStringSync(jo['article']);
-        print(stringify({'isOK': true}));
+        print(JSON.encode({'isOK': true}));
       } on FileIOException {
         jotdown('error writing page file: ${pn}');
-        print(stringify({'isOK': false}));
+        print(JSON.encode({'isOK': false}));
       }
     });
   }
@@ -138,12 +140,12 @@ signin() {
   if (Platform.environment['REQUEST_METHOD'] == 'POST') {
     stdin.listen((e) {
       postInput = new String.fromCharCodes(e);
-      var jo = parse(decodeUriComponent(postInput));
+      var jo = JSON.decode(Uri.decodeQueryComponent(postInput));
       var tokinfo = fetchPassToken(jo['username'], jo['password']);
       if (tokinfo[0]) {
-        print(stringify({'isOK': true, 'passtoken': tokinfo[1]}));
+        print(JSON.encode({'isOK': true, 'passtoken': tokinfo[1]}));
       } else {
-        print(stringify({'isOK': false, 'passtoken': null}));
+        print(JSON.encode({'isOK': false, 'passtoken': null}));
       }
     });
   }
