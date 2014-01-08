@@ -20,7 +20,7 @@ var postInput;
 
 final routeChart = {
   'dumpenv': displayEnvironment,
-  'save': saveArticle,
+  'save': stashArticle,
   'signin': signin,
   'time': showTime,
 };
@@ -148,5 +148,28 @@ signin() {
         print(JSON.encode({'isOK': false, 'passtoken': null}));
       }
     });
+  }
+}
+
+stashArticle() {
+  if (Platform.environment['REQUEST_METHOD'] == 'POST') {
+    var iline;
+    var sb = new StringBuffer();
+    while (true) {
+      iline = stdin.readLineSync(retainNewlines: true);
+      if (iline == null) break;
+      sb.write(iline);
+    }
+    postInput = sb.toString();
+    var jo = JSON.decode(Uri.decodeQueryComponent(postInput));
+    var pn = jo['title'];
+    try {
+      var pf = new File('page/${pn}');
+      pf.writeAsStringSync(jo['article']);
+      print(JSON.encode({'isOK': true}));
+    } on FileIOException {
+      jotdown('error writing page file: ${pn}');
+      print(JSON.encode({'isOK': false}));
+    }
   }
 }
